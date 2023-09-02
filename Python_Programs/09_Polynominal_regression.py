@@ -1,42 +1,36 @@
-from sklearn.preprocessing import PolynomialFeatures
 import numpy as np
-from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
 
-# Create some sample data
+# Generate some sample data
 X = np.array([1, 2, 3, 4, 5]).reshape(-1, 1)
-y = np.array([2, 4, 5, 4, 5]).reshape(-1, 1)
+y = np.array([2, 3, 4, 4.5, 5.5])
 
-# Create a linear regression object and fit the data
-reg = LinearRegression().fit(X, y)
+# Create a linear regression model
+linear_model = LinearRegression()
+linear_model.fit(X, y)
 
-# Predict new values
-X_new = np.array([6]).reshape(-1, 1)
-y_pred = reg.predict(X_new)
-
-# Plot the data and the linear regression line
-plt.scatter(X, y)
-plt.plot(X, reg.predict(X), color='red')
-plt.show()
-
-
-# Create some sample data
-X = np.array([1, 2, 3, 4, 5]).reshape(-1, 1)
-y = np.array([2, 4, 5, 4, 5]).reshape(-1, 1)
-
-# Transform the data to include another axis
+# Create polynomial features (degree=2)
 poly = PolynomialFeatures(degree=2)
 X_poly = poly.fit_transform(X)
 
-# Create a polynomial regression object and fit the data
-reg = LinearRegression().fit(X_poly, y)
+# Create a polynomial regression model
+poly_model = LinearRegression()
+poly_model.fit(X_poly, y)
 
-# Predict new values
-X_new = np.array([6]).reshape(-1, 1)
-X_new_poly = poly.transform(X_new)
-y_pred = reg.predict(X_new_poly)
+# Generate predictions for both models
+X_pred = np.arange(1, 6, 0.1).reshape(-1, 1)
+linear_predictions = linear_model.predict(X_pred)
+poly_predictions = poly_model.predict(poly.transform(X_pred))
 
-# Plot the data and the polynomial regression curve
-plt.scatter(X, y)
-plt.plot(X, reg.predict(X_poly), color='red')
+# Plot the data, linear regression line, and polynomial regression curve
+plt.scatter(X, y, label='Data')
+plt.plot(X_pred, linear_predictions, color='blue', label='Linear Regression')
+plt.plot(X_pred, poly_predictions, color='red',
+         label='Polynomial Regression (degree=2)')
+plt.xlabel('X')
+plt.ylabel('y')
+plt.title('Comparison of Linear and Polynomial Regression')
+plt.legend()
 plt.show()
